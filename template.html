@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI compute tape - Contrasignal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--panel:#F5F7FA;--ink:#0F172A;--muted:#64748B;--rule:#E5E7EB;--neutral:#CBD5E1;--blue:#2457F5;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.app{width:1920px;height:1080px;padding:56px 72px 48px;display:flex;flex-direction:column;gap:28px;overflow:hidden}
+.top{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px;font-weight:700;font-size:24px;letter-spacing:-.01em}
+.sq{width:18px;height:18px;background:var(--blue);border-radius:3px}
+.brand .sep{color:var(--neutral);font-weight:400}
+.brand .tab{font-weight:500;color:var(--muted)}
+.meta{display:flex;align-items:center;gap:22px;font-size:19px;color:var(--muted)}
+.live{display:flex;align-items:center;gap:9px;color:var(--ink)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--blue)}
+.main{flex:1;display:grid;grid-template-columns:560px 1fr;gap:40px;min-height:0}
+.hero{background:var(--panel);border-radius:20px;padding:44px 44px 36px;display:flex;flex-direction:column}
+.kicker{color:var(--blue);font-size:19px;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.hero h1{font-size:54px;line-height:1.06;letter-spacing:-.025em;font-weight:700;margin-top:18px}
+.hero p{font-size:22px;line-height:1.45;color:var(--muted);margin-top:18px}
+.big{margin-top:30px;display:flex;align-items:baseline;gap:16px}
+.big .n{font-size:88px;font-weight:600;color:var(--blue);letter-spacing:-.03em}
+.big .l{font-size:20px;color:var(--muted)}
+.bars{margin-top:auto;display:flex;flex-direction:column;gap:13px}
+.bars .bt{font-size:19px;color:var(--muted);margin-bottom:4px}
+.bar{display:grid;grid-template-columns:90px 1fr 92px;align-items:center;gap:14px;font-size:19px}
+.bar .tk{font-weight:600}
+.track{height:14px;position:relative}
+.fill{position:absolute;top:0;height:14px;border-radius:3px;background:var(--neutral)}
+.zero{position:absolute;top:-5px;bottom:-5px;width:1px;background:var(--muted)}
+.bar.hl .fill{background:var(--blue)}
+.bar .v{text-align:right}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:24px;min-height:0}
+.card{border:1px solid var(--rule);border-radius:18px;padding:28px 30px 22px;display:flex;flex-direction:column;background:#fff;transition:none;position:relative}
+.card.focus{box-shadow:0 18px 50px rgba(15,23,42,.10);border-color:var(--neutral)}
+.ch{display:flex;justify-content:space-between;align-items:flex-start}
+.tk2{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.nm{font-size:18px;color:var(--muted);margin-top:4px}
+.chg{font-size:22px;font-weight:600;padding:6px 12px;border-radius:8px;background:var(--panel)}
+.chg.up{color:var(--ink)}
+.card.lead .chg{background:var(--blue);color:#fff}
+.price{font-size:48px;font-weight:600;letter-spacing:-.02em;margin-top:18px}
+.sub{display:flex;gap:20px;font-size:17px;white-space:nowrap;color:var(--muted);margin-top:8px}
+.sub b{color:var(--ink);font-weight:500}
+.spark{flex:1;margin-top:14px;min-height:0;position:relative}
+.spark svg{width:100%;height:100%;overflow:visible}
+.tip{position:absolute;background:var(--ink);color:#fff;font-size:17px;padding:8px 12px;border-radius:8px;white-space:nowrap;transform:translate(-50%,0);pointer-events:none}
+.fc{position:absolute;right:0;transform:translateY(-50%);font-size:15px;color:var(--muted);font-family:"IBM Plex Mono",monospace;background:#fff;padding-left:8px}
+.hpd{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 0 0 1px var(--blue);transform:translate(-50%,-50%)}
+.foot{display:flex;justify-content:space-between;align-items:center;font-size:18px;color:var(--muted)}
+.foot .r{display:flex;align-items:center;gap:20px}
+</style></head>
+<body>
+<div class="app" id="app">
+  <div class="top">
+    <div class="brand"><div class="sq"></div>Contrasignal<span class="sep">/</span><span class="tab" id="title"></span></div>
+    <div class="meta"><span class="live mono"><span class="dot" id="dot"></span><span id="asof"></span></span><span class="mono">@Contrasignal_ai</span></div>
+  </div>
+  <div class="main">
+    <div class="hero" id="hero">
+      <div class="kicker" id="kicker"></div>
+      <h1 id="headline"></h1>
+      <p id="dek"></p>
+      <div class="big"><span class="n mono" id="bign"></span><span class="l" id="bigl"></span></div>
+      <div class="bars" id="bars"><div class="bt" id="barstitle"></div></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div class="foot"><span id="source"></span><span class="r"><span class="mono" id="code"></span></span></div>
+</div>
+<script>
+const DATA = /*DATA*/null;
+const $ = id => document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+const fmt=(v,d=2)=>v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=v=>(v>=0?'+':'-')+fmt(Math.abs(v),1)+'%';
+const money=(v,t)=>(t.currency==='USD'&&!t.index?'$':'')+fmt(v,2);
+function ptTime(ts){return new Date(ts*1000).toLocaleTimeString('en-US',{timeZone:'America/Los_Angeles',hour:'numeric',minute:'2-digit'})+' PT'}
+
+$('title').textContent=DATA.title; $('kicker').textContent=DATA.kicker; $('headline').textContent=DATA.headline;
+$('dek').textContent=DATA.dek; $('asof').textContent=DATA.asof; $('source').textContent=DATA.source; $('code').textContent=DATA.code||'';
+$('bigl').textContent=DATA.big_label; $('barstitle').textContent=DATA.bars_title;
+const T=DATA.tickers; const lead=T.find(t=>t.lead)||T[0];
+const maxAbs=Math.max(...T.map(t=>Math.abs(t.chg)));
+const minV=Math.min(0,...T.map(t=>t.chg));
+const span=Math.max(...T.map(t=>t.chg))-minV;
+const sorted=[...T].sort((a,b)=>b.chg-a.chg);
+const barEls=sorted.map(t=>{const r=document.createElement('div');r.className='bar'+(t.lead?' hl':'');
+  r.innerHTML=`<span class="tk">${t.label}</span><span class="track"><span class="zero"></span><span class="fill"></span></span><span class="v mono"></span>`;$('bars').appendChild(r);
+  const z=(-minV)/span*100; r.querySelector('.zero').style.left=z+'%'; return {t,r,z};});
+const W=440,H=150;
+const cards=T.map((t,i)=>{const c=document.createElement('div');c.className='card'+(t.lead?' lead':'');
+  c.innerHTML=`<div class="ch"><div><div class="tk2">${t.label}</div><div class="nm">${t.name}</div></div><div class="chg mono"></div></div>
+  <div class="price mono"></div><div class="sub mono"><span>Fri <b>${money(t.prev,t)}</b></span><span>High <b>${money(t.high,t)}</b></span></div>
+  <div class="spark"><span class="fc">Fri close</span><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"></svg></div>`;
+  $('grid').appendChild(c);
+  const s=t.series, lo=Math.min(t.prev,...s.map(p=>p[1])), hi=Math.max(t.prev,...s.map(p=>p[1]));
+  const t0=DATA.session[0],t1=DATA.session[1];
+  const X=ts=>(ts-t0)/(t1-t0)*W, Y=v=>H-8-(v-lo)/(hi-lo||1)*(H-16);
+  const d=s.map((p,k)=>(k?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  const col=t.lead?'var(--blue)':'var(--ink)';
+  const svg=c.querySelector('svg');
+  svg.innerHTML=`<line x1="0" x2="${W}" y1="${Y(t.prev)}" y2="${Y(t.prev)}" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+  <path class="ln" d="${d}" fill="none" stroke="${col}" stroke-width="${t.lead?3:2.2}" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+`;
+  const path=svg.querySelector('.ln'); const L=path.getTotalLength(); path.style.strokeDasharray=L; 
+  // day-high point for tooltip
+  let hiPt=[t.high_time||s.reduce((a,p)=>p[1]>a[1]?p:a,s[0])[0], t.high];
+  return {t,c,path,L,svg,X,Y,hiPt,i};});
+let tipEl=null;
+// Deterministic render at time t (seconds). Used both live (rAF) and for frame capture.
+window.renderAt=function(t){
+  const fadeHero=ease(t/0.6); $('hero').style.opacity=fadeHero; $('hero').style.transform=`translateY(${(1-fadeHero)*14}px)`;
+  $('dot').style.opacity=0.35+0.65*Math.abs(Math.cos(t*Math.PI/1.4));
+  const nb=ease((t-0.5)/2.0); $('bign').textContent=pct(lead.chg*nb);
+  cards.forEach(o=>{const st=0.15+o.i*0.12; const a=ease((t-st)/0.6);
+    o.c.style.opacity=a; o.c.style.transform=`translateY(${(1-a)*18}px)`;
+    const k=ease((t-0.6-o.i*0.1)/2.0); const v=o.t.prev+(o.t.price-o.t.prev)*k;
+    o.c.querySelector('.price').textContent=money(v,o.t);
+    o.c.querySelector('.chg').textContent=pct(o.t.chg*k);
+    const dk=ease((t-1.0-o.i*0.12)/2.4); o.path.style.strokeDashoffset=o.L*(1-dk);
+  });
+  cards.forEach(o=>{const sp=o.c.querySelector('.spark');o.c.querySelector('.fc').style.top=(o.Y(o.t.prev)*sp.getBoundingClientRect().height/H)+'px';});
+  barEls.forEach((o,j)=>{const k=ease((t-1.6-j*0.1)/1.6);const w=Math.abs(o.t.chg)/span*100*k;
+    const f=o.r.querySelector('.fill'); f.style.width=w+'%'; f.style.left=(o.t.chg>=0?o.z:o.z-w)+'%';
+    o.r.querySelector('.v').textContent=pct(o.t.chg*k); o.r.style.opacity=ease((t-1.2-j*0.08)/0.5);});
+  // focus/hover phase on lead card: 5.2s -> end
+  const L=cards.find(o=>o.t.lead); const f=ease((t-5.2)/0.6);
+  L.c.classList.toggle('focus',f>0.02); L.c.style.transform=`translateY(${-6*f}px) scale(${1+0.015*f})`;
+  cards.forEach(o=>{if(!o.t.lead) o.c.style.opacity=Math.min(parseFloat(o.c.style.opacity),1-0.45*f)});
+  const tipA=ease((t-6.0)/0.5);
+  if(!tipEl){tipEl=document.createElement('div');tipEl.className='tip mono';L.c.querySelector('.spark').appendChild(tipEl);
+    tipEl.textContent=`Day high ${money(L.t.high,L.t)} at ${ptTime(L.hiPt[0])}`;}
+  const sp=L.c.querySelector('.spark').getBoundingClientRect(); const sx=sp.width/W, sy=sp.height/H;
+  const hx=L.X(L.hiPt[0])*sx, hy=L.Y(L.hiPt[1])*sy; tipEl.style.left=Math.max(150,hx)+'px'; tipEl.style.top=Math.max(hy+46,sp.height*0.55)+'px'; tipEl.style.opacity=tipA;
+  if(!window.__hpd){window.__hpd=document.createElement('div');window.__hpd.className='hpd';L.c.querySelector('.spark').appendChild(window.__hpd);}
+  window.__hpd.style.left=hx+'px';window.__hpd.style.top=hy+'px';window.__hpd.style.opacity=tipA;
+};
+if(!window.__CAPTURE__){const s=performance.now();(function loop(){renderAt((performance.now()-s)/1000);requestAnimationFrame(loop)})();}
+else renderAt(0);
+</script></body></html>

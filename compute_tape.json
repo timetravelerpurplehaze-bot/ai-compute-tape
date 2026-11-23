@@ -1,0 +1,17 @@
+{
+ "title": "AI compute tape",
+ "kicker": "Markets / Compute tape",
+ "headline": "The rally went to compute",
+ "dek": "Jensen Huang's first session back as Nvidia CEO. Every move is measured against the Friday, Nov 20 close.",
+ "big_label": "Nvidia vs Friday close",
+ "bars_title": "Change vs Fri Nov 20 close",
+ "source": "Source: Yahoo Finance chart API, 5-min bars. Not investment advice.",
+ "tickers": [
+  {"symbol": "NVDA", "label": "NVDA", "name": "Nvidia", "lead": true},
+  {"symbol": "CRWV", "label": "CRWV", "name": "CoreWeave"},
+  {"symbol": "NBIS", "label": "NBIS", "name": "Nebius"},
+  {"symbol": "TSM", "label": "TSM", "name": "TSMC (ADR)"},
+  {"symbol": "^IXIC", "label": "Nasdaq", "name": "Nasdaq Composite", "index": true},
+  {"symbol": "ANT", "label": "ANT", "name": "Anthropic"}
+ ]
+}
